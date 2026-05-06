@@ -1,0 +1,32 @@
+You are an expert government procurement analyst. Your task is to extract ALL eligibility criteria from the following tender document sections.
+
+Extract every requirement a bidder must satisfy to be considered eligible. Be thorough — do not miss any criterion, no matter how briefly stated.
+
+Return ONLY a valid JSON array of criteria objects. No preamble, no explanation, no markdown code fences.
+
+Each criterion must follow this exact structure:
+{{
+  "criterion_id": "placeholder",
+  "category": "eligibility|financial|technical|compliance",
+  "requirement_text": "the exact requirement as stated in the document",
+  "threshold": "specific measurable value if present, else null",
+  "threshold_unit": "Cr|years|number|percentage|null",
+  "document_required": "name of supporting document required, else null",
+  "logical_operator": "AND|OR|NOT|null",
+  "page_reference": page_number_as_integer_or_null,
+  "is_mandatory": true_or_false
+}}
+
+Category definitions:
+- eligibility: general qualification requirements
+- financial: turnover, net worth, revenue, profit criteria
+- technical: experience, past work, capacity criteria
+- compliance: registration, certificates, statutory requirements
+
+TENDER SECTIONS:
+{tender_text}
+
+JSON SCHEMA FOR REFERENCE:
+{schema}
+
+Return the JSON array now:

@@ -1,3 +1,61 @@
 heapq
 json
 datetime
+# ─────────────────────────────────────────
+# TendorGuard AI — requirements.txt
+# ─────────────────────────────────────────
+
+# Core
+anthropic>=0.25.0
+openai>=1.30.0
+python-dotenv>=1.0.0
+
+# Agent 1 — Architect
+transformers>=4.40.0
+torch>=2.2.0
+torchvision>=0.17.0
+Pillow>=10.0.0
+PyMuPDF>=1.24.0           # fitz — PDF parsing
+layoutparser>=0.3.4
+
+# Agent 2 — Vision
+opencv-python>=4.9.0      # OpenCV preprocessing
+pytesseract>=0.3.10       # fallback OCR backend
+# RT-DETR is loaded via transformers (RTDetrForObjectDetection)
+# CLIP is loaded via transformers (CLIPModel)
+
+# Agent 3 — Fact Checker
+chromadb>=0.5.0
+rank-bm25>=0.2.2
+sentence-transformers>=3.0.0   # for embeddings + bge-reranker-large
+FlagEmbedding>=1.2.0           # bge-reranker-large
+
+# Agent 4 — Auditor
+# openai and anthropic already listed above
+
+# Agent 5 — HITL
+reportlab>=4.0.0
+psycopg2-binary>=2.9.0    # PostgreSQL
+
+# API & Pipeline
+fastapi>=0.111.0
+celery>=5.4.0
+redis>=5.0.0
+uvicorn>=0.29.0
+
+# UI
+streamlit>=1.35.0
+
+# Utilities
+spacy>=3.7.0
+numpy>=1.26.0
+pandas>=2.2.0
+pydantic>=2.7.0
+tqdm>=4.66.0
+camelot-py[cv]>=0.11.0    # table extraction from PDFs
+pdfplumber>=0.11.0
+
+# Dev / Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+black>=24.0.0
