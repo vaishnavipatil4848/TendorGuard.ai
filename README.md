@@ -10,6 +10,7 @@
 ## 👥 Team Zeta
 
 **Hackathon Theme:** Theme 3 — AI-Based Tender Evaluation and Eligibility Analysis
+<br>
 **Members:**
 * Vaishnavi Patil
 * Harshita Agrawal
