@@ -10,7 +10,10 @@
 ## 👥 Team Zeta
 
 **Hackathon Theme:** Theme 3 — AI-Based Tender Evaluation and Eligibility Analysis
-
+** Members:**
+* Vaishnavi Patil
+* Harshita Agrawal
+* Jivika Dixit
 ---
 
 ## 📌 Problem Statement
@@ -404,27 +407,6 @@ pytest tests/
 
 ---
 
-## 🗺️ Roadmap
-
-### Round 1 (Current)
-- PDF text extraction via LayoutLMv3
-- Dual-LLM verdict logic (GPT-4o + Claude)
-- UI Evidence Viewer with bbox highlights
-- Agent 1 and Agent 2 fully implemented
-
-### Round 2 (Implementation)
-- Qdrant migration for production hybrid semantic search
-- Celery + Redis for async multi-bidder processing
-- ReportLab signed PDF audit report generation
-- Full Agent 3, 4, 5 integration
-
-### Future Scope
-- Multilingual OCR expansion beyond Hindi/English
-- Integration with national portals — GeM / CPPP
-- RT-DETR fine-tuning on accumulated low-confidence dataset
-- Confidence weight auto-calibration from human override history
-
----
 
 ## 🛠️ Tech Stack
 
