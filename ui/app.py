@@ -197,7 +197,7 @@ if page == "🏠 Dashboard & Upload":
                     # Previously run_bidders() and generate_final_report() were called
                     # inside the loop — once per file — which is both wrong and wasteful.
                     for idx, bf in enumerate(bidder_files, 1):
-                        status_text.markdown(f"**Step 1/5:** Parsing Bidder Document ({idx}/{len(bidder_files)}): `{bf.name}`...")
+                        status_text.markdown(f"**Step 1/5:** Parsing Bidder PDF ({idx}/{len(bidder_files)}): `{bf.name}`...")
                         progress_bar.progress((idx / len(bidder_files)) * 0.1)  # first 10%
 
                         b_path = STORAGE_BIDDER / bf.name
