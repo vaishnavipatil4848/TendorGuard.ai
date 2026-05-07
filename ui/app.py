@@ -181,24 +181,28 @@ if page == "🏠 Dashboard & Upload":
                     progress_bar = st.progress(0)
                     status_text = st.empty()
 
+                    # FIX 1: The orchestrator calls _cb(current, total, msg) where
+                    # current/total are already the raw step numbers (e.g. 2, 5).
+                    # st.progress() expects a float in [0.0, 1.0], so divide here.
                     def update_progress(step, total, msg):
-                        progress_bar.progress(step / total)
+                        progress_bar.progress(float(step) / float(total))
                         status_text.markdown(f"**Current Task:** {msg}")
 
                     st.session_state.orchestrator._cb = update_progress
 
                     all_bidder_data = []
-                    
-                    # 2.1 Parse Bidder PDFs with Progress
+
+                    # FIX 2: Collect ALL bidder files first, then run the pipeline once.
+                    # Previously run_bidders() and generate_final_report() were called
+                    # inside the loop — once per file — which is both wrong and wasteful.
                     for idx, bf in enumerate(bidder_files, 1):
-                        status_text.markdown(f"**Step 2/5:** Parsing Bidder PDF ({idx}/{len(bidder_files)}): `{bf.name}`...")
-                        progress_bar.progress((idx / len(bidder_files)) * 0.1) # First 10% for parsing
-                        
+                        status_text.markdown(f"**Step 1/5:** Parsing Bidder PDF ({idx}/{len(bidder_files)}): `{bf.name}`...")
+                        progress_bar.progress((idx / len(bidder_files)) * 0.1)  # first 10%
+
                         b_path = STORAGE_BIDDER / bf.name
                         with open(b_path, "wb") as f:
                             f.write(bf.getbuffer())
 
-                        # Use cached parser
                         regions = st.session_state.layout_parser.parse_pdf(str(b_path))
                         pages = {}
                         raw_text = ""
@@ -218,18 +222,30 @@ if page == "🏠 Dashboard & Upload":
                             "doc_type": "PDF"
                         })
 
-                        # Run Pipeline
-                        st.session_state.bidder_reports = []
-                        st.session_state.evidence_maps = {}
+                    # Run pipeline once after all bidders are collected
+                    st.session_state.bidder_reports = []
+                    st.session_state.evidence_maps = {}
 
-                        # Stages 2-4 are now orchestrated with granular progress
-                        # We use the internal run_bidders logic for consistency
-                        st.session_state.orchestrator.run_bidders(all_bidder_data)
+                    st.session_state.orchestrator.run_bidders(all_bidder_data)
 
-                        # Finalize
-                        st.session_state.orchestrator.generate_final_report()
-                        st.session_state.processing_complete = True
-                        st.success("🎉 Evaluation complete! Head over to the Leaderboard to see results.")
+                    # FIX 3: Populate evidence_maps in session_state so Evidence
+                    # Deep-dive page can render correctly. The orchestrator stores
+                    # evidence per bidder inside run_stage3_evidence but never
+                    # writes it back to session_state.
+                    for report_entry in st.session_state.orchestrator.bidder_reports:
+                        bid = report_entry.get("bidder_id", "")
+                        # evidence_map is attached by run_stage5_hitl via the report
+                        agg = report_entry.get("aggregated_report", {})
+                        ev  = agg.get("evidence_map", {})
+                        if ev:
+                            st.session_state.evidence_maps[bid] = ev
+
+                    st.session_state.bidder_reports = st.session_state.orchestrator.bidder_reports
+
+                    # Finalize
+                    st.session_state.orchestrator.generate_final_report()
+                    st.session_state.processing_complete = True
+                    st.success("🎉 Evaluation complete! Head over to the Leaderboard to see results.")
 
     with col2:
         st.subheader("System Status")
