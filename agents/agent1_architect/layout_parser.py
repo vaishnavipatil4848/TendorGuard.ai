@@ -13,6 +13,7 @@ import fitz  # PyMuPDF
 from transformers import LayoutLMv3Processor, LayoutLMv3ForSequenceClassification
 from PIL import Image
 import torch
+from pipeline.utils import extract_text_from_docx
 
 logger = logging.getLogger(__name__)
 
@@ -63,10 +64,13 @@ class LayoutParser:
             }
         """
         pdf_path = Path(pdf_path)
-        if not pdf_path.exists():
-            raise FileNotFoundError(f"PDF not found: {pdf_path}")
+        logger.info(f"Parsing document: {pdf_path.name}")
+        ext = pdf_path.suffix.lower()
 
-        logger.info(f"Parsing PDF: {pdf_path.name}")
+        if ext in (".docx", ".doc"):
+            return self._parse_docx(str(pdf_path))
+
+        # fitz handles PDF and images (jpg, png, etc.)
         doc = fitz.open(str(pdf_path))
         all_regions = []
 
@@ -79,6 +83,26 @@ class LayoutParser:
         doc.close()
         logger.info(f"Total regions detected: {len(all_regions)}")
         return all_regions
+
+    def _parse_docx(self, docx_path: str) -> List[Dict[str, Any]]:
+        """Extract text from DOCX and create a dummy 'Text' region."""
+        text = extract_text_from_docx(docx_path)
+        if not text:
+            return []
+        
+        # Split into paragraphs to simulate regions
+        paragraphs = text.split("\n")
+        regions = []
+        for i, p in enumerate(paragraphs):
+            if p.strip():
+                regions.append({
+                    "page_number": 1,
+                    "label": "Text",
+                    "text": p.strip(),
+                    "bbox": [0, i*20, 500, (i+1)*20],  # dummy bbox
+                    "confidence": 1.0
+                })
+        return regions
 
     def _parse_page(self, page: fitz.Page, page_number: int) -> List[Dict[str, Any]]:
         """

@@ -11,7 +11,7 @@ or bank statements for experience letters.
 """
 
 import logging
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Union
 
 logger = logging.getLogger(__name__)
 
@@ -51,24 +51,33 @@ class MetadataFilter:
     def filter(
         self,
         chunks: List[Dict[str, Any]],
-        criterion_category: str
+        criteria_context: Union[str, List[Dict[str, Any]]]
     ) -> List[Dict[str, Any]]:
         """
-        Filter chunks to those relevant for the criterion category.
+        Filter chunks to those relevant for the given criteria.
 
         Args:
             chunks: all chunks for a bidder
-            criterion_category: from criterion dict
-                e.g. "financial", "technical", "compliance", "eligibility"
+            criteria_context: either a single category string (e.g. "financial")
+                            or a list of criterion dicts.
 
         Returns:
             Filtered list — always includes document summary chunks
         """
-        category_key = criterion_category.lower().strip()
-        allowed_types = CATEGORY_DOC_MAP.get(
-            category_key,
-            ["PDF", "TXT"]  # fallback — search all if unknown category
-        )
+        if isinstance(criteria_context, list):
+            # Extract unique categories from criteria list
+            categories = {c.get("category", "").lower().strip() for c in criteria_context}
+            allowed_types = set()
+            for cat in categories:
+                allowed_types.update(CATEGORY_DOC_MAP.get(cat, ["PDF", "TXT"]))
+            if not allowed_types:
+                allowed_types = {"PDF", "TXT"}
+        else:
+            category_key = criteria_context.lower().strip()
+            allowed_types = set(CATEGORY_DOC_MAP.get(
+                category_key,
+                ["PDF", "TXT"]
+            ))
 
         # always include document-level summary chunks
         summaries = [
@@ -92,7 +101,7 @@ class MetadataFilter:
                 filtered.append(c)
 
         logger.debug(
-            f"MetadataFilter [{criterion_category}]: "
+            f"MetadataFilter [{criteria_context}]: "
             f"{len(chunks)} → {len(filtered)} chunks "
             f"(allowed types: {allowed_types})"
         )

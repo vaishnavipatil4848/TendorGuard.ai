@@ -16,27 +16,30 @@ SECTION_KEYWORDS = {
     "eligibility": [
         "eligibility", "eligible", "qualification", "qualifying",
         "criteria", "criterion", "pre-qualification", "prequalification",
-        "bidder must", "applicant must", "vendor must", "पात्रता"
+        "bidder must", "applicant must", "vendor must", "पात्रता", "अनिवार्यता",
+        "eligibility criteria", "minimum eligibility", "eligibility condition"
     ],
     "financial": [
         "turnover", "annual turnover", "revenue", "financial",
         "net worth", "profit", "loss", "balance sheet", "ca certificate",
-        "chartered accountant", "वित्तीय", "कारोबार"
+        "chartered accountant", "वित्तीय", "कारोबार", "वित्तीय स्थिति",
+        "average annual turnover", "financial capability"
     ],
     "technical": [
         "technical", "experience", "similar work", "past project",
         "completion certificate", "work order", "performance",
-        "specification", "तकनीकी", "अनुभव"
+        "specification", "तकनीकी", "अनुभव", "technical experience",
+        "work experience", "similar nature"
     ],
     "compliance": [
         "gst", "pan", "registration", "license", "certificate",
         "compliance", "statutory", "msme", "dpiit", "iso",
-        "पंजीकरण", "प्रमाण पत्र"
+        "पंजीकरण", "प्रमाण पत्र", "statutory documents", "compliance documents"
     ],
     "boilerplate": [
         "general terms", "definitions", "disclaimer", "preamble",
         "introduction", "background", "about", "contact",
-        "page", "index", "table of contents"
+        "page", "index", "table of contents", "annexure", "appendix"
     ]
 }
 

@@ -47,7 +47,7 @@ class CriteriaExtractor:
     Runs a two-pass extraction — initial pass + self-critique.
     """
 
-    def __init__(self, model: str = "claude-opus-4-6"):
+    def __init__(self, model: str = "claude-3-5-sonnet-20241022"):
         self.client = anthropic.Anthropic()
         self.model = model
         self.extraction_prompt = self._load_prompt("extraction_prompt.txt")
@@ -160,6 +160,15 @@ class CriteriaExtractor:
                 page = region.get("page_number", "?")
                 if text:
                     parts.append(f"[Page {page}] {text}")
+
+        if not parts:
+            logger.info("No relevant sections identified — falling back to all document text")
+            for cat, regions in sections.items():
+                for region in regions:
+                    text = region.get("text", "").strip()
+                    page = region.get("page_number", "?")
+                    if text:
+                        parts.append(f"[Page {page}] {text}")
 
         return "\n".join(parts)
 
