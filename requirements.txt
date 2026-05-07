@@ -1,3 +1,6 @@
+heapq
+json
+datetime
 # ─────────────────────────────────────────
 # TendorGuard AI — requirements.txt
 # ─────────────────────────────────────────
