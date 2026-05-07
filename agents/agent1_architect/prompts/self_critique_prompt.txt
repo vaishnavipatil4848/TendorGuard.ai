@@ -1,0 +1,24 @@
+You are auditing an extraction of eligibility criteria from a government tender document.
+
+Review the tender text and the initial extraction carefully. Your job is to produce the FINAL complete and accurate criteria list.
+
+Check specifically for:
+1. Cross-referenced criteria — phrases like "as per clause X", "refer section Y", "in accordance with"
+2. Conditional criteria — "if the bidder is MSME...", "in case of JV..."
+3. Implicit criteria — requirements stated indirectly or as assumptions
+4. Negative requirements — "bidder must NOT have been blacklisted..."
+5. Criteria hidden in footnotes, annexures, or general conditions
+6. Duplicate criteria in the initial list that should be merged into one
+
+Return ONLY a valid JSON array containing the complete final list of criteria.
+Include all correct criteria from the initial extraction plus any new ones you found.
+Remove genuine duplicates.
+No preamble, no explanation, no markdown.
+
+TENDER TEXT:
+{tender_text}
+
+INITIAL EXTRACTION:
+{initial_criteria}
+
+Return the complete final JSON array:
