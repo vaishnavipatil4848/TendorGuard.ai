@@ -12,26 +12,38 @@ from typing import List, Dict, Any
 import chromadb
 from chromadb.utils import embedding_functions
 
+from agents.agent3_factchecker.embedder import TextEmbedder
+
 logger = logging.getLogger(__name__)
 
-COLLECTION_PREFIX = "bidder_"
-EMBED_MODEL       = "text-embedding-3-large"
+COLLECTION_PREFIX = "tendor_bidder_"
+
+
+class TendorGuardEmbeddingFunction:
+    """
+    Adapter to use our TextEmbedder as a ChromaDB EmbeddingFunction.
+    """
+    def __init__(self, embedder: TextEmbedder):
+        self.embedder = embedder
+
+    def __call__(self, input: List[str]) -> List[List[float]]:
+        # embed_texts returns a list of numpy arrays
+        vecs = self.embedder.embed_texts(input)
+        return [v.tolist() for v in vecs]
 
 
 class DenseRetriever:
     """
-    Indexes and retrieves chunks using ChromaDB with
-    OpenAI text-embedding-3-large embeddings.
-
-    Per-bidder collections are created fresh on each run
-    to avoid stale data from previous evaluations.
+    Indexes and retrieves chunks using ChromaDB.
+    
+    Uses TextEmbedder which automatically selects between 
+    OpenAI and Local (SentenceTransformers) based on API key presence.
     """
 
     def __init__(self, persist_dir: str = "./database/chroma_store"):
         self.client   = chromadb.PersistentClient(path=persist_dir)
-        self.embed_fn = embedding_functions.OpenAIEmbeddingFunction(
-            model_name=EMBED_MODEL
-        )
+        self.embedder = TextEmbedder(mode="auto")
+        self.embed_fn = TendorGuardEmbeddingFunction(self.embedder)
 
     def index(
         self,

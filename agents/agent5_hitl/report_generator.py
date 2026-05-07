@@ -33,20 +33,21 @@ try:
         HRFlowable, PageBreak
     )
     REPORTLAB_AVAILABLE = True
+    
+    # Colour palette matching TendorGuard brand (navy + amber)
+    NAVY  = colors.HexColor("#1B2A4A")
+    AMBER = colors.HexColor("#F59E0B")
+    LIGHT = colors.HexColor("#F3F4F6")
+    RED   = colors.HexColor("#DC2626")
+    GREEN = colors.HexColor("#16A34A")
+    GREY  = colors.HexColor("#6B7280")
 except ImportError:
     REPORTLAB_AVAILABLE = False
+    NAVY = AMBER = LIGHT = RED = GREEN = GREY = None
     logger.warning(
         "ReportLab not installed — PDF generation disabled. "
         "Install with: pip install reportlab"
     )
-
-# Colour palette matching TendorGuard brand (navy + amber)
-NAVY  = colors.HexColor("#1B2A4A")
-AMBER = colors.HexColor("#F59E0B")
-LIGHT = colors.HexColor("#F3F4F6")
-RED   = colors.HexColor("#DC2626")
-GREEN = colors.HexColor("#16A34A")
-GREY  = colors.HexColor("#6B7280")
 
 
 class ReportGenerator:
